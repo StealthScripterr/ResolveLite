@@ -43,7 +43,12 @@ builder.Services.AddHealthChecks()
 var app = builder.Build();
 
 // ── Pipeline ────────────────────────────────────────────────────────────────
-app.UseExceptionHandler();
+app.UseExceptionHandler(new ExceptionHandlerOptions
+{
+    StatusCodeSelector = exception => exception is BadHttpRequestException badRequest
+        ? badRequest.StatusCode
+        : StatusCodes.Status500InternalServerError
+});
 app.MapStaticAssets();
 app.UseAntiforgery();
 
