@@ -25,7 +25,7 @@ steps:
   #    Other steps reach this container by its id: http://app:8080
   - id: app
     cmd: $Registry/resolvelite/app:{{.Run.ID}}
-    detach: true,
+    detach: true
     workingDirectory: /app
     disableWorkingDirectoryOverride: true
     env:
