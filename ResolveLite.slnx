@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../../Compressed/resolvelite-6.4-files/resolvelite/.dockerignore" />
+    <File Path="../../Compressed/resolvelite-6.4-files/resolvelite/acr-task.yaml" />
+    <File Path="../../Compressed/resolvelite-6.4-files/resolvelite/Dockerfile" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/ResolveLite.Api.IntegrationTests/ResolveLite.Api.IntegrationTests.csproj" />
+    <Project Path="src/ResolveLite.Api/ResolveLite.Api.csproj">
+      <BuildDependency Project="src/ResolveLite.Core/ResolveLite.Core.csproj" />
+      <BuildDependency Project="src/ResolveLite.Infrastructure/ResolveLite.Infrastructure.csproj" />
+    </Project>
+    <Project Path="src/ResolveLite.Core.Tests/ResolveLite.Core.Tests.csproj">
+      <BuildDependency Project="src/ResolveLite.Core/ResolveLite.Core.csproj" />
+    </Project>
+    <Project Path="src/ResolveLite.Core/ResolveLite.Core.csproj" />
+    <Project Path="src/ResolveLite.Infrastructure/ResolveLite.Infrastructure.csproj">
+      <BuildDependency Project="src/ResolveLite.Core/ResolveLite.Core.csproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>

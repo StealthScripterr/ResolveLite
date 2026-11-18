@@ -1,0 +1,84 @@
+<main class="shell">
+  <header class="masthead">
+    <div>
+      <h1>ResolveLite</h1>
+      <p class="tagline">Knowledge base · upload support FAQs</p>
+    </div>
+    @if (info(); as i) {
+      <p class="build" title="Build running in {{ i.environment }}">
+        <span class="env">{{ i.environment }}</span>
+        <code>{{ i.version }}</code>
+      </p>
+    }
+  </header>
+
+  <section class="card">
+    <h2>Upload an FAQ</h2>
+    <p class="hint">Plain text (.txt) or Markdown (.md), UTF-8, up to 1 MB.</p>
+
+    <div class="form-row">
+      <label>
+        <span>Category</span>
+        <select [value]="category()" (change)="onCategoryChange($event)">
+          @for (c of categories; track c) {
+            <option [value]="c">{{ c }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="file">
+        <span>File</span>
+        <input #fileInput type="file" accept=".txt,.md,text/plain,text/markdown" (change)="onFileSelected($event)" />
+      </label>
+
+      <button type="button" (click)="upload(fileInput)" [disabled]="!file() || uploading()">
+        {{ uploading() ? 'Uploading…' : 'Upload' }}
+      </button>
+    </div>
+
+    @if (error(); as message) {
+      <p class="error" role="alert">{{ message }}</p>
+    }
+  </section>
+
+  <section class="card">
+    <div class="list-header">
+      <h2>Documents</h2>
+      <button type="button" class="secondary" (click)="refresh()" [disabled]="refreshing()">
+        @if (refreshing()) {
+          <span class="spinner" aria-hidden="true"></span>
+          Refreshing…
+        } @else {
+          Refresh
+        }
+      </button>
+    </div>
+
+    @if (sortedDocuments().length === 0) {
+      <p class="hint">No documents yet. Upload your first FAQ above.</p>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">File</th>
+            <th scope="col">Category</th>
+            <th scope="col">Status</th>
+            <th scope="col">Uploaded</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (doc of sortedDocuments(); track doc.id) {
+            <tr>
+              <td>{{ doc.fileName }}</td>
+              <td>{{ doc.category }}</td>
+              <td><span class="badge" [attr.data-status]="doc.status">{{ doc.status }}</span></td>
+              <td>{{ doc.uploadedAt | date: 'medium' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+</main>
+
+<router-outlet />

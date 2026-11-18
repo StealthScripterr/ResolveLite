@@ -1,0 +1,12 @@
+<header class="masthead">
+    <div>
+      <h1>LMAO</h1>
+      <p class="tagline">LMAO</p>
+    </div>
+    @if (info(); as i) {
+      <p class="build" title="Build running in {{ i.environment }}">
+        <span class="env">{{ i.environment }}</span>
+        <code>{{ i.version }}</code>
+      </p>
+    }
+  </header>

@@ -1,0 +1,19 @@
+<Project>
+  <!--
+    Shared build settings for EVERY project under this folder.
+    MSBuild imports this file automatically before each .csproj.
+  -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
+    <Authors>ResolveLite</Authors>
+    <Product>ResolveLite</Product>
+  </PropertyGroup>
+
+  <!-- Production code: warnings fail the build. Test projects stay lenient. -->
+  <PropertyGroup Condition="!$(MSBuildProjectName.EndsWith('Tests'))">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>

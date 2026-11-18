@@ -33,6 +33,7 @@ ScaffoldingReadMe.txt
 
 # NuGet Packages
 *.nupkg
+
 # NuGet Symbol Packages
 *.snupkg
 
@@ -55,3 +56,20 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Angular
+**/node_modules/
+**/.angular/
+
+# Angular build output is generated into the API's wwwroot (never commit build output)
+src/ResolveLite.Api/wwwroot/
+
+# Non-secret Azure IDs written by deploy/01-foundation.sh (environment-specific)
+deploy/.outputs.env
+
+# Local tooling
+.DS_Store
+*.swp
+.vs/
+bin/
+obj/
