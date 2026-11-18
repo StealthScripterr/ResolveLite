@@ -1,0 +1,26 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Files Docker / ACR Tasks must NOT send as build context.
+# Smaller context = faster uploads, better caching, nothing leaked into images.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Build outputs and tool caches
+**/bin/
+**/obj/
+**/node_modules/
+**/.angular/
+**/.vs/
+**/*.user
+
+# Generated locally by `ng build`. The image builds its own copy in Stage 1,
+# so a stale local copy must never sneak in.
+src/ResolveLite.Api/wwwroot/
+
+# Developer-only settings never go into an image
+**/appsettings.Development.json
+
+# Not needed to build the app
+.git/
+.github/
+docs/
+deploy/
+tests/

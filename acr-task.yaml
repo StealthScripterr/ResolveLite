@@ -1,0 +1,49 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# ResolveLite multi-step ACR task:  build → run → smoke test → push
+#
+# Run it from Azure Cloud Shell (Portal):
+#   az acr run --registry <registry> --file acr-task.yaml \
+#              --set sha=<7-char commit> <git-repo-url>#main
+#
+# If ANY step fails, the push step never runs, so a broken image can
+# never reach the registry.
+# ─────────────────────────────────────────────────────────────────────────────
+version: v1.1.0
+
+steps:
+  # 1) Build the image. It stays on the build agent; nothing is pushed yet.
+  - id: build
+    build: >
+      -t $Registry/resolvelite/app:sha-{{.Values.sha}}
+      -t $Registry/resolvelite/app:{{.Run.ID}}
+      --build-arg APP_VERSION=sha-{{.Values.sha}}
+      -f Dockerfile .
+
+  # 2) Start the new image in the background.
+  #    Development mode + a dummy endpoint let it boot WITHOUT Azure credentials
+  #    (ValidateOnStart needs an endpoint; liveness and the UI never call Storage).
+  #    Other steps reach this container by its id: http://app:8080
+  - id: app
+    cmd: $Registry/resolvelite/app:{{.Run.ID}}
+    detach: true
+    env:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Storage__BlobEndpoint=https://smoke-test.blob.core.windows.net/
+    when: ["build"]
+
+  # 3a) Smoke test: the process is alive (retries while .NET starts up).
+  - id: smoke-live
+    cmd: mcr.microsoft.com/azure-cli curl -fsS --retry 15 --retry-delay 2 --retry-all-errors http://app:8080/health/live
+    when: ["app"]
+
+  # 3b) Smoke test: the Angular UI is really inside the image (index.html → 200).
+  - id: smoke-ui
+    cmd: mcr.microsoft.com/azure-cli curl -fsS -o /dev/null http://app:8080/
+    when: ["smoke-live"]
+
+  # 4) Every check passed → push both tags.
+  - id: push
+    push:
+      - $Registry/resolvelite/app:sha-{{.Values.sha}}
+      - $Registry/resolvelite/app:{{.Run.ID}}
+    when: ["smoke-ui"]
